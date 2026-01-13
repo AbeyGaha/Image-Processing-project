@@ -1,0 +1,32 @@
+import cv2
+from engine.contrast import ContrastEngine
+from engine.face import FaceEngine
+from engine.similarity import SimilarityEngine
+
+img = cv2.imread("sample.jpg")
+
+rgb = ContrastEngine.to_rgb(img)
+gray = ContrastEngine.to_gray(img)
+bw = ContrastEngine.to_bw(img)
+edges = ContrastEngine.edges(img)
+
+cv2.imshow("Original", img)
+cv2.imshow("RGB", rgb)
+cv2.imshow("Gray", gray)
+cv2.imshow("Black & White", bw)
+cv2.imshow("Edges", edges)
+
+face_engine = FaceEngine("models/haarcascade_frontalface_default.xml")
+faces = face_engine.detect_faces(gray)
+
+for (x, y, w, h) in faces:
+    cv2.rectangle(img, (x, y), (x+w, y+h), (0,255,0), 2)
+
+cv2.imshow("Face Detection", img)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+# Face similarity test
+similarity = SimilarityEngine.face_similarity("face1.jpg", "face2.jpg")
+print("Resemblance Percentage:", similarity, "%")
